@@ -1,0 +1,22 @@
+{
+  "domain": "cecotec_humidifier",
+  "name": "Humidificador Youngdo/Cecotec",
+  "bluetooth": [
+    {
+      "local_name": "Aroma"
+    },
+    {
+      "local_name": "Youngdo_Ble"
+    },
+    {
+      "local_name": "youngdo-Aroma"
+    }
+  ],
+  "codeowners": ["@diegogarcia_dev"],
+  "config_flow": true,
+  "dependencies": ["bluetooth"],
+  "documentation": "https://github.com/diegogarciadev/cecotec_humidifier",
+  "iot_class": "local_push",
+  "requirements": [],  
+  "version": "1.0.0"
+}

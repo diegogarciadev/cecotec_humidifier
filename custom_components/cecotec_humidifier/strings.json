@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuration",
+        "description": "This integration is automatically configured."
+      }
+    },
+    "abort": {
+      "no_devices_found": "No compatible Bluetooth devices found.",
+      "bluetooth_only": "This integration is only added automatically via Bluetooth."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "humidifier_available_binary_sensor": {
+        "name": "Humidifier available",
+        "state": {
+          "on": "Available",
+          "off": "Unavailable"
+        }
+      },
+      "humidifier_connected_binary_sensor": {
+        "name": "Humidifier connected"
+      }
+    },
+    "fan": {
+      "humidifier_fan": {
+        "name": "Humidifier",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "low": "Low",
+              "medium": "Medium",
+              "high": "High"
+            }
+          }
+        }
+      }
+    },
+    "light": {
+      "humidifier_light": {
+        "name": "Humidifier Light",
+        "state_attributes": {
+          "effect": {
+            "state": {
+              "red": "Red",
+              "pink": "Pink",
+              "blue": "Blue",
+              "cyan": "Cyan",
+              "green": "Green",
+              "yellow": "Yellow",
+              "white": "White",
+              "gray": "Gray",
+              "orange": "Orange",
+              "changing": "Changing Color",
+              "rhythm": "Rhythmic"
+            }
+          }
+        }
+      }
+    },
+    "select": {
+      "humidifier_timer": {
+        "name": "Timer",
+        "state": {
+          "off": "Off",
+          "1h": "1 Hour",
+          "2h": "2 Hours",
+          "3h": "3 Hours",
+          "4h": "4 Hours",
+          "5h": "5 Hours",
+          "6h": "6 Hours",
+          "7h": "7 Hours",
+          "8h": "8 Hours",
+          "9h": "9 Hours",
+          "10h": "10 Hours",
+          "11h": "11 Hours",
+          "12h": "12 Hours"
+        }
+      }
+    },
+    "switch": {
+      "humidifier_continuousmode_switch": {
+        "name": "Continuous Mode"
+      }
+    }
+  }
+}

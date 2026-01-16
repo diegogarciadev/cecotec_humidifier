@@ -1,0 +1,89 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configuración",
+        "description": "Esta integración se configura autoáticamente."
+      }
+    },
+    "abort": {
+      "no_devices_found": "No se encontraron dispositivos Bluetooth compatibles.",
+      "bluetooth_only": "Esta integración solo se añade automáticamente mediante Bluetooth."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "humidifier_available_binary_sensor": {
+        "name": "Humidificador disponible",
+        "state": {
+          "on": "Disponible",
+          "off": "No disponible"
+        }
+      },
+      "humidifier_connected_binary_sensor": {
+        "name": "Humidificador conectado"
+      }
+    },
+    "fan": {
+      "humidifier_fan": {
+        "name": "Humidificador",
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "low": "Mínimo",
+              "medium": "Medio",
+              "high": "Máximo"
+            }
+          }
+        }
+      }
+    },
+    "light": {
+      "humidifier_light": {
+        "name": "Luz Humidificador",
+        "state_attributes": {
+          "effect": {
+            "state": {
+              "red": "Rojo",
+              "pink": "Rosa",
+              "blue": "Azul",
+              "cyan": "Cian",
+              "green": "Verde",
+              "yellow": "Amarillo",
+              "white": "Blanco",
+              "gray": "Gris",
+              "orange": "Naranja",
+              "changing": "Color Cambiante",
+              "rhythm": "Ritmica"
+            }
+          }
+        }
+      }
+    },
+    "select": {
+      "humidifier_timer": {
+        "name": "Temporizador",
+        "state": {
+          "off": "Apagado",
+          "1h": "1 Hora",
+          "2h": "2 Horas",
+          "3h": "3 Horas",
+          "4h": "4 Horas",
+          "5h": "5 Horas",
+          "6h": "6 Horas",
+          "7h": "7 Horas",
+          "8h": "8 Horas",
+          "9h": "9 Horas",
+          "10h": "10 Horas",
+          "11h": "11 Horas",
+          "12h": "12 Horas"
+        }
+      }
+    },
+    "switch": {
+      "humidifier_continuousmode_switch": {
+        "name": "Modo Continuo"
+      }
+    }
+  }
+}
