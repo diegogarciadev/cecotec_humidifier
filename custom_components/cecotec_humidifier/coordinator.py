@@ -1,4 +1,5 @@
 import logging
+import math
 from datetime import datetime, timedelta
 from bleak_retry_connector import (
     establish_connection,
@@ -20,8 +21,12 @@ from .const import (
     DEVICE_DEFAULT_FAN_MODE,
     YOUNGDO_MANUFACTURER,
     AROMA_MANUFACTURER,
-    CECOTEC_MANUFACTURAR,
-    GENERIC_MANUFACTURAR
+    CECOTEC_MANUFACTURER,
+    GENERIC_MANUFACTURER,
+    DEVICE_FAN_MODE_LOW,
+    DEVICE_FAN_MODE_MEDIUM,
+    DEVICE_FAN_MODE_HIGH,
+    DEVICE_LIGHT_EFFECT_CHANGING
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -33,7 +38,7 @@ class BLECoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             _LOGGER,
-            #name="Cecotec Humidifier BLE",
+            name="Cecotec Humidifier BLE",
             update_interval=None,
         )
         self.hass = hass
@@ -50,12 +55,14 @@ class BLECoordinator(DataUpdateCoordinator):
            "preset_mode": DEVICE_DEFAULT_FAN_MODE,
            "continuous": True,
            "timer_hours": None,
+           "remaining_timer_minutes": 0,
            "light_on": False,
            "rgb_color": (255, 255, 255),
            "brightness": self.max_bright,
            "effect": None,
         }
         self._timer_hours = None
+        self._remaining_timer_minutes = 0
         self._fan_on = False
         self._preset_mode = DEVICE_DEFAULT_FAN_MODE
         self._continuous = True
@@ -96,6 +103,7 @@ class BLECoordinator(DataUpdateCoordinator):
         "preset_mode": getattr(self, "_preset_mode", DEVICE_DEFAULT_FAN_MODE),
         "continuous": self._continuous,
         "timer_hours": self._timer_hours,
+        "remaining_timer_minutes": self._remaining_timer_minutes,
         "light_on": self._light_on,
         "rgb_color": self._rgb_color,
         "brightness": self._brightness,
@@ -107,9 +115,9 @@ class BLECoordinator(DataUpdateCoordinator):
       if YOUNGDO_MANUFACTURER.upper() in self.name.upper():
         self.manufacturer = YOUNGDO_MANUFACTURER
       elif AROMA_MANUFACTURER.upper() == self.name.upper():
-        self.manufacturer = CECOTEC_MANUFACTURAR
+        self.manufacturer = CECOTEC_MANUFACTURER
       else:
-        self.manufacturer = GENERIC_MANUFACTURAR
+        self.manufacturer = GENERIC_MANUFACTURER
 
       return DeviceInfo(
         identifiers={(DOMAIN, self.address)},
@@ -211,9 +219,14 @@ class BLECoordinator(DataUpdateCoordinator):
              self._fan_on = False
           #TIME
           _LOGGER.debug("TIME: %s", command[6:10])
-          minutes_left = int(command[6:10], 16)
-          hours_left = minutes_left // 60
-          self._timer_hours = hours_left
+          self._remaining_timer_minutes = int(command[6:10], 16)
+          hours_left = self._remaining_timer_minutes // 60
+          _LOGGER.debug("REMAINING MIN: %s", self._remaining_timer_minutes)
+          if self._remaining_timer_minutes == 0:
+              self._timer_hours = None
+          else:
+              self._timer_hours = math.ceil(self._remaining_timer_minutes / 60)
+          _LOGGER.debug("HOURS LEFT: %s", self._timer_hours)
           #FOG WORK MODE
           _LOGGER.debug("FOG WORK MODE: %s", command[10:12])
           if command[10:12] == "01":
@@ -223,35 +236,36 @@ class BLECoordinator(DataUpdateCoordinator):
           #FOG MODEL
           _LOGGER.debug("FOG MODEL: %s", command[12:14])
           if command[12:14] == "01":
-             self._preset_mode = "Baja"
+             self._preset_mode = DEVICE_FAN_MODE_LOW
           elif command[12:14] == "02":
-             self._preset_mode = "Media"
+             self._preset_mode = DEVICE_FAN_MODE_MEDIUM
           elif command[12:14] == "03":
-             self._preset_mode = "Alta"
+             self._preset_mode = DEVICE_FAN_MODE_HIGH
         elif command[0:4] == "BBF9":
-          _LOGGER.debug("Light message")
+          #_LOGGER.debug("Light message")
           #ON-OFF
-          _LOGGER.debug("ON-OFF: %s", command[4:6])
+          #_LOGGER.debug("ON-OFF: %s", command[4:6])
           if command[4:6] == "01":
              self._light_on = True
           elif command[4:6] == "00":
              self._light_on = False
           #RGB
-          _LOGGER.debug("RGB: %s", command[6:12])
+          #_LOGGER.debug("RGB: %s", command[6:12])
           self._rgb_color = (int(command[6:8], 16), int(command[8:10], 16), int(command[10:12], 16))
           #LIGHT MODE
-          _LOGGER.debug("LIGHT MODE: %s", int(command[12:14], 16))
+          #_LOGGER.debug("LIGHT MODE: %s", int(command[12:14], 16))
           light_mode = int(command[12:14], 16)
           #BRIGHTNESS
-          _LOGGER.debug("BRIGHTNESS: %s", int(command[14:16], 16))
+          #_LOGGER.debug("BRIGHTNESS: %s", int(command[14:16], 16))
           self._brightness = int(command[14:16], 16)
           #LIGHT SEQUENCE
-          _LOGGER.debug("LIGHT SEQUENCE: %s", int(command[16:18], 16))
+          #_LOGGER.debug("LIGHT SEQUENCE: %s", int(command[16:18], 16))
+          #_LOGGER.debug("LIGHT EFFECT: %s", DEVICE_LIGHT_COLORS[command[16:18]])
           self._effect = DEVICE_LIGHT_COLORS[command[16:18]]
           if light_mode == 1:
-             _LOGGER.debug("Color cambiante")
+             #_LOGGER.debug("Color cambiante")
              self._rgb_color = (255, 255, 255)
-             self._effect = "Color Cambiante"
+             self._effect = DEVICE_LIGHT_EFFECT_CHANGING
           else:
              if int(command[16:18], 16) > 6:
                 self._effect = None

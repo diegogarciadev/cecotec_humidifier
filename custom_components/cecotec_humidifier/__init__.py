@@ -42,7 +42,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     #Load entities
     await hass.config_entries.async_forward_entry_setups(
        entry, 
-       ["switch", "binary_sensor", "fan", "select", "light"]
+       ["sensor", "switch", "binary_sensor", "fan", "select", "light"]
     )
     return True
 
@@ -56,7 +56,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     unload_ok = await hass.config_entries.async_unload_platforms(
         entry,
-        ["switch", "binary_sensor", "fan", "select", "light"],
+        ["sensor", "switch", "binary_sensor", "fan", "select", "light"],
     )
 
     if coordinator:

@@ -1,8 +1,11 @@
+import logging
 from homeassistant.components.fan import FanEntity, FanEntityFeature
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .coordinator import BLECoordinator
 from .const import DOMAIN, DEVICE_FAN_MODES, DEVICE_DEFAULT_FAN_MODE, DEVICE_FAN_MODE_LOW, DEVICE_FAN_MODE_MEDIUM, DEVICE_FAN_MODE_HIGH
+
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, entry, async_add_entities):
     coordinator: BLECoordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
@@ -49,6 +52,8 @@ class CecotecHumidifierFan(CoordinatorEntity, FanEntity):
         self.coordinator._timer_hours = None
         self.coordinator._fan_on = False
         self.coordinator._preset_mode = DEVICE_DEFAULT_FAN_MODE
+        self.coordinator._timer_hours = None
+        self.coordinator._remaining_timer_minutes = 0
         #Set continuous mode before power off
         if not self.coordinator._continuous:
             await self.coordinator.send_command(bytes.fromhex("AAF30100000000000000FF73"))
@@ -73,3 +78,4 @@ class CecotecHumidifierFan(CoordinatorEntity, FanEntity):
             return  #Invalid mode
 
         await self.coordinator.send_command(command)
+        self.async_write_ha_state()

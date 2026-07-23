@@ -24,7 +24,7 @@ class CecotecHumidifierLight(CoordinatorEntity, LightEntity):
     _attr_translation_key = "humidifier_light"
     _attr_has_entity_name = True
     _attr_supported_features = LightEntityFeature.EFFECT
-    _attr_supported_color_modes = {ColorMode.RGB, ColorMode.HS, ColorMode.BRIGHTNESS}
+    _attr_supported_color_modes = {ColorMode.RGB}
     _attr_color_mode = ColorMode.RGB
 
     def __init__(self, coordinator: BLECoordinator):
@@ -113,6 +113,7 @@ class CecotecHumidifierLight(CoordinatorEntity, LightEntity):
           await self.coordinator.send_command(command)
 
         if "brightness" in kwargs:
+            command = f"AAFB{self.coordinator._brightness:02X}00000000000000FF73"
             command = bytes.fromhex(command)   
             await self.coordinator.send_command(command)      
         

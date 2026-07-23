@@ -1,6 +1,15 @@
 {
   "config": {
+    "flow_title": "{name}",
     "step": {
+      "bluetooth": {
+        "title": "{name} ({address})",
+        "description": "¿Quieres añadir el dispositivo {name} a Home Assistant?"
+      },
+      "discovery_confirm": {
+        "title": "{name} ({address})",
+        "description": "¿Quieres añadir el dispositivo {name} a Home Assistant?"
+      },
       "user": {
         "title": "Configuración",
         "description": "Esta integración se configura autoáticamente."
@@ -78,6 +87,14 @@
           "11h": "11 Horas",
           "12h": "12 Horas"
         }
+      }
+    },
+    "sensor": {
+      "humidifier_remaining_timer": {
+        "name": "Temporizador Restante"
+      },
+      "humidifier_status": {
+        "name": "Estado Temporizador"
       }
     },
     "switch": {

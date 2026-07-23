@@ -1,6 +1,15 @@
 {
   "config": {
+    "flow_title": "{name}",
     "step": {
+      "bluetooth": {
+        "title": "{name} ({address})",
+        "description": "¿Quieres añadir el dispositivo {name} a Home Assistant?"
+      },
+      "discovery_confirm": {
+        "title": "{name} ({address})",
+        "description": "¿Quieres añadir el dispositivo {name} a Home Assistant?"
+      },
       "user": {
         "title": "Configuration",
         "description": "This integration is automatically configured."
@@ -80,10 +89,19 @@
         }
       }
     },
+    "sensor": {
+      "humidifier_remaining_timer": {
+        "name": "Remaining Timer"
+      }
+    },
     "switch": {
       "humidifier_continuousmode_switch": {
         "name": "Continuous Mode"
       }
     }
+  },
+  "error": {
+    "general" : "GENERAL",
+    "error_general" : "ERROR GENERAL"
   }
 }

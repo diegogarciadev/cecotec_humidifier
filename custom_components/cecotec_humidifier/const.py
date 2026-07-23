@@ -15,8 +15,8 @@ DEVICE_FAN_MODE_HIGH = "high"
 
 YOUNGDO_MANUFACTURER = "Youngdo"
 AROMA_MANUFACTURER = "Aroma"
-CECOTEC_MANUFACTURAR = "Cecotec"
-GENERIC_MANUFACTURAR = "Generic"
+CECOTEC_MANUFACTURER = "Cecotec"
+GENERIC_MANUFACTURER = "Generic"
 
 DEVICE_MAX_HOURS = {
     "Aroma": 12,
@@ -59,4 +59,6 @@ DEVICE_LIGHT_EFFECT_LIST = [
     "changing",
     "rhythm"
 ]
+
+DEVICE_LIGHT_EFFECT_CHANGING = "changing"
 

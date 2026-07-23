@@ -33,10 +33,12 @@ class CecotecHumidifierTimerSelect(CoordinatorEntity, SelectEntity):
         self._attr_current_option = DEVICE_DEFAULT_TIMER_OFF
 
     @property
-    def native_value(self) -> str:
-        if self.coordinator.timer_hours is None:
+    def current_option(self):
+        hours = self.coordinator._timer_hours
+        _LOGGER.debug("Timer hours: %s", hours)
+        if hours is None:
             return DEVICE_DEFAULT_TIMER_OFF
-        return f"{self.coordinator.timer_hours}h"
+        return f"{hours}h"
 
     @property
     def available(self) -> bool:
@@ -53,10 +55,14 @@ class CecotecHumidifierTimerSelect(CoordinatorEntity, SelectEntity):
             return
         if option == "off":
             self.coordinator._timer_hours = None
+            self.coordinator._remaining_timer_minutes = 0
+            #Set continuous mode before power off
+            if not self.coordinator._continuous:
+                await self.coordinator.send_command(bytes.fromhex("AAF30100000000000000FF73"))
+                self.coordinator._continuous = True
+            await self.coordinator.send_command(bytes.fromhex("AAF10000000000000000FF73"))
+            self.coordinator._fan_on = False
             self.coordinator.update_state()
-            command = f"AAF20000000000000000FF73"
-            await self.coordinator.send_command(bytes.fromhex(command))
-            return
         else:
             hours = int(option.rstrip("h"))
             _LOGGER.debug("Timer %s hours", hours)
@@ -64,3 +70,4 @@ class CecotecHumidifierTimerSelect(CoordinatorEntity, SelectEntity):
             self.coordinator.update_state()
             command = f"AAF2{hours:02X}00000000000000FF73"
             await self.coordinator.send_command(bytes.fromhex(command))
+        self.async_write_ha_state()
